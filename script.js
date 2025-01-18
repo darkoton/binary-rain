@@ -1,10 +1,11 @@
-class Binary_rain {
+class BinaryRain {
   constructor(options) {
     this.element = document.querySelector(options.el)
 
     this.color = options.color
     this.size = options.size
     this.timer = options.timer
+    this.speed = options.speed
 
     this.canvas = document.createElement('canvas')
     this.canvas.classList.add('binary-rain')
@@ -16,16 +17,17 @@ class Binary_rain {
     this.element.appendChild(this.canvas)
 
     this.lines = []
-
     this.drawActive = false
 
     this.generate()
   }
 
   draw() {
-    if (this.canvas.getContext) {
+    if (!this.canvas.getContext) return
+
       this.drawActive = true
       const ctx = this.ctx
+
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       ctx.fillStyle = this.color
 
@@ -48,15 +50,13 @@ class Binary_rain {
       }
       requestAnimationFrame(() => {
         setTimeout(() => {
-          this.draw()
-        }, this.timer);
+          this.draw() 
+        }, this.speed);
       })
-    }
   }
 
   generate() {
     const binaryCode = [0, 1]
-    const probability = [true, false, true, true, true, true, true, true, true, true]
 
     const line = []
     const x = Math.floor(Math.random() * (this.canvas.width / this.size))
@@ -71,27 +71,27 @@ class Binary_rain {
       }
     }
 
-    if (probability[Math.floor(probability.length * Math.random())]) {
       this.lines.push(line)
       if (!this.drawActive) {
         requestAnimationFrame(() => {
+         
           this.draw()
         })
       }
-    }
 
     setTimeout(() => requestAnimationFrame(() => {
       this.generate()
-    }), this.timer * 10)
+    }), this.timer)
 
   }
 }
 
-const rain = new Binary_rain({
+const rain = new BinaryRain({
   el: '.app',
   width: window.innerWidth,
   height: window.innerHeight + 10,
   color: 'green',
-  size: 20,
-  timer: 10
+  size: 30,
+  timer: 100,
+  speed: 100
 })
